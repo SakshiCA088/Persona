@@ -1,0 +1,1 @@
+Created "Persona" — a full-stack profile-sharing platform that lets users express their personality through visual and textual media.
