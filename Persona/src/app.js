@@ -20,7 +20,7 @@ app.use(express.urlencoded({extended : true, limit : "16kb"}))
 app.use(express.static("Public"))
 
 //to parse cookies from incoming requests
-app.use(cookieParser())
+app.use(cookieParser())//adds cookies to req, runs for every req
 
 //routes import 
 import userRouter from './routes/user.routes.js'
