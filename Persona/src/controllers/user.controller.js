@@ -4,7 +4,7 @@ import { User } from "../models/user.model.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
-import { Subscription } from "../models/subscription.model.js";
+import mongoose from "mongoose";
 
 const generateAccessAndRefreshToken = async(userId) => {
     try {
@@ -210,16 +210,17 @@ const refreshAccessToken = asyncHandler ( async (req, res) => {
             secure : true
         }
     
-        const {newAccessToken, newRefreshToken} = await generateAccessAndRefreshToken(user._id)
+        // const {newAccessToken, newRefreshToken} = await generateAccessAndRefreshToken(user._id)
+        const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id)
     
         return res
         .status(200)
-        .cookie("accessToken", newAccessToken, options)
-        .cookie("refreshToken", newRefreshToken, options)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
         .json(
             new ApiResponse(
                 200, 
-                { accessToken : newAccessToken, refreshToken : newRefreshToken },
+                { accessToken : accessToken, refreshToken : refreshToken },
                 "Access token refreshed"
             )
         )
@@ -421,7 +422,7 @@ const getUserChannelProfile = asyncHandler ( async(req, res) => {
 })
 
 const getWatchHistory = asyncHandler( async ( req, res) => {
-    const user = await user.aggregate([
+    const user = await User.aggregate([
         {
             $match : {
                 _id : new mongoose.Types.ObjectId(req.user._id)
